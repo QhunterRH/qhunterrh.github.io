@@ -1,0 +1,13 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Herasymchuk;Roman;;;
+FN:Roman Herasymchuk
+TITLE:Senior C++ Software Engineer
+ORG:Ericsson
+TEL;TYPE=CELL:+48792709196
+EMAIL;TYPE=INTERNET:roman.herasymchuk.ua@gmail.com
+ADR;TYPE=WORK:;;;Łódź;;;Poland
+URL:https://www.linkedin.com/in/roman-herasymchuk-303274158/
+X-SOCIALPROFILE;TYPE=telegram:https://t.me/quiet_detonation
+NOTE:Telegram: https://t.me/quiet_detonation — Met at WAWTech 2026\, Warsaw
+END:VCARD

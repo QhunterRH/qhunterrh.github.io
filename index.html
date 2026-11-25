@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roman Herasymchuk — C++</title>
+<meta name="description" content="Roman Herasymchuk — Senior C++ Engineer & LTE Product Guardian at Ericsson">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&family=Inter+Tight:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+/* VOICE: a dry engineer's joke for developers, a calm one-pager for everyone else
+   IDEA: one person, two builds: -DMODE=dev is a compiler log, -DMODE=human is a clean card
+   PICTURE: dev = terminal that "segfaults" into a core-dump resume; human = big name, key facts, timeline
+   COLOUR and TYPE: C++ blue field, GCC diagnostic accents; JetBrains Mono + Inter Tight
+   LAYOUT: sticky mode switch, one column, contacts first, resume after */
+:root{color-scheme:light dark;
+--bg:light-dark(#f6f7f9,#0b1622);--ink:light-dark(#0e1a26,#e8eef5);--mut:light-dark(#566475,#93a4b8);
+--blue:#00599c;--blue2:light-dark(#00599c,#4aa3e8);--term:#08131e;--tink:#d9e4ee;
+--err:#ff4d5e;--warn:light-dark(#b0237a,#e040a0);--ok:light-dark(#0a7a3d,#3ad07a);--note:#38c6e0;
+--card:light-dark(#ffffff,#102233);--line:light-dark(#dfe4ea,#1e3448);--soft:light-dark(#eef4fa,#0b1a28)}
+:root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Inter Tight",system-ui,sans-serif;overflow-x:clip}
+code,.m{font-family:"JetBrains Mono",ui-monospace,monospace}
+a{color:var(--blue2)}
+body[data-mode=dev] .human,body[data-mode=human] .dev{display:none!important}
+
+.switch{position:sticky;top:0;z-index:5;display:flex;justify-content:center;padding:10px;background:var(--blue)}
+.seg{display:inline-flex;background:#ffffff1f;border-radius:999px;padding:4px;gap:4px}
+.seg button{font:600 15px "Inter Tight",sans-serif;color:#fff;background:none;border:0;border-radius:999px;padding:0 16px;min-height:40px;cursor:pointer}
+.seg button[aria-pressed=true]{background:#fff;color:var(--blue)}
+.seg button:focus-visible,.btn:focus-visible,.bar button:focus-visible{outline:3px solid var(--note);outline-offset:2px}
+
+.top{background:var(--blue);padding:6px max(4vw,14px) 0}
+.term{max-width:760px;margin:0 auto;background:var(--term);color:var(--tink);border-radius:14px 14px 0 0;box-shadow:0 20px 40px #0006;overflow:hidden}
+.bar{display:flex;align-items:center;gap:7px;padding:10px 14px;background:#0f2133;font:13px "JetBrains Mono",monospace;color:#8ca3b9}
+.bar i{width:11px;height:11px;border-radius:50%;background:#ff5f57}.bar i+i{background:#febc2e}.bar i+i+i{background:#28c840}
+.bar span{margin-left:8px;flex:1}
+.bar button{font:inherit;color:#cfe0f0;background:none;border:1px solid #2b4560;border-radius:6px;padding:4px 10px;min-height:32px;cursor:pointer}
+#log{margin:0;padding:16px 16px 22px;font:14px/1.6 "JetBrains Mono",monospace;white-space:pre-wrap;word-break:break-word;min-height:270px}
+#log .p{color:#3ad07a}#log .e{color:var(--err);font-weight:800}#log .w{color:#e040a0;font-weight:600}#log .n{color:var(--note)}#log .c{color:#7f95ab}#log .k{color:#fff;font-weight:600}
+.cur{display:inline-block;width:.6em;height:1.1em;background:var(--tink);vertical-align:-.2em;animation:b 1s steps(1) infinite}
+@keyframes b{50%{opacity:0}}
+.shake{animation:sh .4s}@keyframes sh{20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+
+.hband{background:var(--blue);color:#fff;padding:34px max(4vw,14px) 70px}
+.hband .in{max-width:760px;margin:0 auto}
+.hband h1{color:#fff}.hband .role{color:#d4e6f6}
+.hband .tag{display:inline-block;font-size:14px;background:#ffffff26;border-radius:999px;padding:4px 12px;margin-bottom:14px}
+
+main{max-width:760px;margin:0 auto;padding:0 max(4vw,14px) 48px}
+.hero{background:var(--card);border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;padding:26px clamp(18px,4vw,34px) 28px}
+.human .hero{border-top:1px solid var(--line);border-radius:14px;margin-top:-48px;box-shadow:0 10px 30px #00203a1a}
+h1{font-size:clamp(34px,8vw,50px);line-height:1.05;margin:0 0 8px;letter-spacing:-.02em;text-wrap:balance}
+.role{font-size:18px;color:var(--mut);margin:0 0 16px}
+.sig{font:15px/1.6 "JetBrains Mono",monospace;background:var(--soft);border-radius:10px;padding:12px 14px;margin:0 0 20px;overflow-x:auto}
+.sig .kw{color:var(--blue2);font-weight:600}.sig .at{color:var(--warn)}.sig .cm{color:var(--mut)}
+.sig a{color:var(--ok);text-decoration:none;overflow-wrap:anywhere}
+.acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.btn{display:flex;flex-direction:column;justify-content:center;gap:2px;min-height:60px;padding:10px 14px;border-radius:12px;border:2px solid var(--blue2);background:transparent;color:var(--ink);text-decoration:none;font:600 16px "Inter Tight",sans-serif;cursor:pointer;text-align:left}
+.btn small{font:13px "JetBrains Mono",monospace;color:var(--mut);font-weight:400}
+.human .btn small{font-family:"Inter Tight",sans-serif}
+.btn.pri{background:var(--blue);border-color:var(--blue);color:#fff}.btn.pri small{color:#cfe3f5}
+.msg{min-height:22px;margin:10px 0 0;font:14px "JetBrains Mono",monospace;color:var(--ok)}
+.clist{display:grid;gap:6px;margin:16px 0 0;padding:0;list-style:none}
+.clist li{display:grid;grid-template-columns:86px minmax(0,1fr);gap:8px}.clist span{color:var(--mut)}
+.clist a{overflow-wrap:anywhere;text-decoration:none;font-weight:600}
+
+h2{font-size:22px;margin:38px 0 12px;line-height:1.2}
+.dev h2 code{color:var(--blue2);font-size:.8em;font-weight:400;margin-left:6px}
+.trace{list-style:none;margin:0;padding:0;border-left:3px solid var(--blue2)}
+.trace li{display:grid;grid-template-columns:44px minmax(0,1fr);gap:4px 10px;padding:12px 0 12px 12px;border-bottom:1px solid var(--line)}
+.trace .f{font:600 15px "JetBrains Mono",monospace;color:var(--warn)}
+.trace b{font-size:17px}.trace .meta{grid-column:2;color:var(--mut);font-size:15px}
+.when{white-space:nowrap}
+.inc{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.inc li{font:14px "JetBrains Mono",monospace;padding:7px 10px;border-radius:8px;background:var(--card);border:1px solid var(--line)}
+.inc li span{color:var(--blue2)}.inc li.hot{border-color:var(--blue2)}
+.tests{margin:0;padding:0;list-style:none;font:14px/1.6 "JetBrains Mono",monospace}
+.tests li{padding:6px 0}.tests b{color:var(--ok)}
+.diag{margin-top:38px;padding:14px 16px;border-radius:12px;background:var(--term);color:var(--tink);font:14px/1.6 "JetBrains Mono",monospace}
+.diag .w{color:#e040a0;font-weight:600}.diag .ok{color:#3ad07a;font-weight:600}
+
+.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:22px 0 0}
+.facts div{background:var(--soft);border-radius:12px;padding:14px}
+.facts b{display:block;font-size:clamp(26px,6vw,34px);line-height:1.1;color:var(--blue2)}
+.facts span{font-size:14px;color:var(--mut)}
+.tl{list-style:none;margin:0;padding:0}
+.tl li{position:relative;padding:0 0 22px 26px;border-left:2px solid var(--line);margin-left:6px}
+.tl li::before{content:"";position:absolute;left:-8px;top:4px;width:14px;height:14px;border-radius:50%;background:var(--blue2);box-shadow:0 0 0 4px var(--bg)}
+.tl li:last-child{border-color:transparent;padding-bottom:0}
+.tl h3{margin:0;font-size:18px;line-height:1.3}
+.tl .sub{color:var(--mut);font-size:15px;margin:2px 0 8px}
+.tl ul{margin:0;padding-left:18px}.tl ul li{border:0;padding:0;margin:3px 0}
+.tl ul li::before{display:none}
+.groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.groups div{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.groups h3{margin:0 0 6px;font-size:15px;color:var(--mut);font-weight:600}
+.groups p{margin:0}
+footer{margin-top:22px;color:var(--mut);font-size:14px}
+@media(max-width:600px){.acts,.groups{grid-template-columns:minmax(0,1fr)}.btn{min-height:52px;padding:8px 14px}.facts{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.facts div:last-child{grid-column:1/-1}#log{font-size:13px;min-height:300px}}
+@media(prefers-reduced-motion:reduce){.cur,.shake{animation:none}}
+</style>
+</head>
+<body data-mode="dev">
+<nav class="switch" aria-label="View mode">
+  <div class="seg">
+    <button type="button" data-set="dev" aria-pressed="true">&lt;/&gt; Developer</button>
+    <button type="button" data-set="human" aria-pressed="false">Human-readable</button>
+  </div>
+</nav>
+
+<!-- ================= DEV MODE ================= -->
+<div class="dev">
+<header class="top">
+  <div class="term" id="term">
+    <div class="bar"><i></i><i></i><i></i><span>~/wawtech — bash</span><button id="skip" type="button">skip ▸</button></div>
+    <pre id="log" aria-live="polite"></pre>
+  </div>
+</header>
+<main>
+  <section class="hero">
+    <h1>Roman Herasymchuk</h1>
+    <p class="role">Senior C++ Engineer + LTE Product Guardian at Ericsson · Łódź</p>
+    <div class="sig"><span class="at">[[nodiscard]]</span> <span class="kw">constexpr</span> Engineer <b>hire</b>(Roman);<br><span class="cm">// ignoring this return value triggers a warning. Mostly in me.</span></div>
+    <div class="acts">
+      <a class="btn pri" data-ok="→ opening LinkedIn. Hit Connect, I'll accept." href="https://www.linkedin.com/in/roman-herasymchuk-303274158/" target="_blank" rel="noopener">Connect on LinkedIn<small>linkedin.connect()</small></a>
+      <a class="btn" data-ok="→ opening Telegram. I reply faster than my CI." href="https://t.me/quiet_detonation" target="_blank" rel="noopener">Message on Telegram<small>send("hi")</small></a>
+      <button class="btn copy" type="button">Copy my details<small>std::move(contact)</small></button>
+      <a class="btn" data-ok="→ opening CV.pdf. Save it, it's const." href="cv.pdf" target="_blank" rel="noopener">Download CV (PDF)<small>fopen("cv.pdf")</small></a>
+      <a class="btn" data-ok="→ contact moved to your phone. No copies were made." href="roman.vcf" download="Roman_Herasymchuk.vcf">Save contact<small>contacts.push_back(me)</small></a>
+    </div>
+    <p class="msg m"></p>
+    <div class="sig" style="margin:16px 0 0">Contact me{&nbsp;<span class="cm">// C++20 designated initializers</span><br>
+&nbsp;&nbsp;.phone&nbsp;&nbsp;&nbsp;&nbsp;= <a href="tel:+48792709196">"+48 792 709 196"</a>,<br>
+&nbsp;&nbsp;.email&nbsp;&nbsp;&nbsp;&nbsp;= <a href="mailto:roman.herasymchuk.ua@gmail.com">"roman.herasymchuk.ua@gmail.com"</a>,<br>
+&nbsp;&nbsp;.telegram = <a href="https://t.me/quiet_detonation" target="_blank" rel="noopener">"@quiet_detonation"</a>,<br>
+};</div>
+  </section>
+
+  <h2>Core dump <code>bt full</code></h2>
+  <ol class="trace">
+    <li><span class="f">#0</span><b>Ericsson · C++ Developer 50% + UPC Product Guardian (LTE) 50%</b><span class="meta"><span class="when">Apr 2024 – now</span> · owns features end to end: requirements → code → E2E tests on the node. Promoted to Product Guardian after ~1 year</span></li>
+    <li><span class="f">#1</span><b>HARMAN · Trainee → Junior → Middle → Senior C++</b><span class="meta"><span class="when">Jun 2019 – Oct 2023</span> · automotive, real hardware, client workshops, deputy Project Owner, ASPICE</span></li>
+    <li><span class="f">#2</span><b>University of Lodz · BASc Applied Computer Science</b><span class="meta"><span class="when">2017 – 2021</span> · thesis: RC car with a rotating camera</span></li>
+  </ol>
+
+  <h2>Headers <code>#include</code></h2>
+  <ul class="inc" id="inc"></ul>
+
+  <h2>Tests <code>ctest --verbose</code></h2>
+  <ul class="tests">
+    <li><b>[ PASSED ]</b> Harman Automotive Global Hackathon 2019: 2nd place, intelligent steering wheel</li>
+    <li><b>[ PASSED ]</b> Telegram hackathon, Warsaw: 48 h, "Crocodile" drawing game, drawings minted as NFTs via smart contracts</li>
+    <li><b>[ PASSED ]</b> static_assert(PSPO_I &amp;&amp; SoftwareArchitecture)</li>
+  </ul>
+
+  <div class="diag" id="diag"></div>
+  <footer>Met at WAWTech 2026, Warsaw · 26–27 November.</footer>
+</main>
+</div>
+
+<!-- ================= HUMAN MODE ================= -->
+<div class="human">
+<header class="hband"><div class="in">
+  <span class="tag">Open to a chat at WAWTech 2026</span>
+  <h1>Roman Herasymchuk</h1>
+  <p class="role">Senior C++ Engineer and LTE Product Guardian at Ericsson. I build telecom software and lead features from the first question to the final test.</p>
+</div></header>
+<main>
+  <section class="hero">
+    <div class="acts">
+      <a class="btn pri" data-ok="Opening LinkedIn." href="https://www.linkedin.com/in/roman-herasymchuk-303274158/" target="_blank" rel="noopener">Connect on LinkedIn<small>Professional profile</small></a>
+      <a class="btn" data-ok="Opening Telegram." href="https://t.me/quiet_detonation" target="_blank" rel="noopener">Message on Telegram<small>@quiet_detonation</small></a>
+      <button class="btn copy" type="button">Copy my details<small>Phone, email, links</small></button>
+      <a class="btn" data-ok="Opening the CV. Use Save or Share to keep it." href="cv.pdf" target="_blank" rel="noopener">Download CV<small>PDF, one page</small></a>
+      <a class="btn" data-ok="Contact file downloaded. Open it to add me." href="roman.vcf" download="Roman_Herasymchuk.vcf">Save contact<small>Adds me to your phone</small></a>
+    </div>
+    <p class="msg"></p>
+    <ul class="clist">
+      <li><span>Phone</span><a href="tel:+48792709196">+48 792 709 196</a></li>
+      <li><span>Email</span><a href="mailto:roman.herasymchuk.ua@gmail.com">roman.herasymchuk.ua@gmail.com</a></li>
+      <li><span>Based in</span><b>Łódź, Poland</b></li>
+    </ul>
+    <div class="facts">
+      <div><b>7 yrs</b><span>building software in C++</span></div>
+      <div><b>~1 yr</b><span>from joining Ericsson to Product Guardian</span></div>
+      <div><b>2</b><span>hackathons, one podium</span></div>
+    </div>
+  </section>
+
+  <h2>Experience</h2>
+  <ol class="tl">
+    <li><h3>Ericsson</h3><p class="sub">C++ Developer and UPC Product Guardian, LTE · Apr 2024 – now</p>
+      <ul><li>Half development, half product role: guide the team through every stage of a feature, from gathering information and clarifying requirements to support and verifying end-to-end tests on the node</li>
+      <li>Became Product Guardian after about a year: took on more, kept the team motivated, built strong relationships</li></ul></li>
+    <li><h3>HARMAN International</h3><p class="sub">Trainee to Senior C++ Engineer, automotive · Jun 2019 – Oct 2023</p>
+      <ul><li>Grew from trainee to senior in four years</li>
+      <li>Built features, tests and fixes on real hardware; ran workshops with clients</li>
+      <li>Deputy Project Owner: planning, priorities, client communication</li></ul></li>
+    <li><h3>University of Lodz</h3><p class="sub">BASc, Applied Computer Science · 2017 – 2021</p></li>
+  </ol>
+
+  <h2>What I bring</h2>
+  <div class="groups">
+    <div><h3>Engineering</h3><p>C++, C, Python, Linux, Git, Jenkins, Docker, Google Test</p></div>
+    <div><h3>Telecom and automotive</h3><p>LTE, 5G NR, embedded and microcontrollers, ASPICE</p></div>
+    <div><h3>AI in daily work</h3><p>Claude Code, ChatGPT, Gemini; Amazon Q / Kiro CLI commercially; building and using agents and skills</p></div>
+    <div><h3>Product and teams</h3><p>Requirements, Scrum, PSPO I certified, leadership, client communication</p></div>
+  </div>
+
+  <h2>Hackathons</h2>
+  <ul class="tl">
+    <li><h3>2nd place, Harman Automotive Global Hackathon 2019</h3><p class="sub">An intelligent steering wheel</p></li>
+    <li><h3>Telegram hackathon, Warsaw</h3><p class="sub">Two days to build "Crocodile", a drawing game inside Telegram where players' drawings become NFTs</p></li>
+  </ul>
+  <footer>Languages: Ukrainian, Polish, English · Met at WAWTech 2026, Warsaw.</footer>
+</main>
+</div>
+
+<script>
+{
+const LI="https://www.linkedin.com/in/roman-herasymchuk-303274158/";
+const skills=[["c++",1],["c"],["python"],["linux",1],["git"],["jenkins"],["docker"],["gtest"],["lte",1],["5g_nr",1],["aspice"],["microcontrollers"],["claude_code",1],["kiro_cli",1],["ai_agents",1],["solidity"],["scrum"],["leadership",1]];
+document.getElementById("inc").innerHTML=skills.map(([s,h])=>`<li class="${h?"hot":""}"><span>#include</span> &lt;${s}&gt;</li>`).join("");
+
+/* ---- mode switch ---- */
+const btns=[...document.querySelectorAll(".seg button")];
+let started=false;
+function setMode(m,push){
+  if(m!=="human")m="dev";
+  document.body.dataset.mode=m;
+  btns.forEach(b=>b.setAttribute("aria-pressed",String(b.dataset.set===m)));
+  try{localStorage.setItem("rh_mode",m)}catch(e){}
+  if(push&&location.hash!=="#"+m)history.replaceState(null,"","#"+m);
+  if(m==="dev"&&!started)boot();
+}
+btns.forEach(b=>b.addEventListener("click",()=>setMode(b.dataset.set,true)));
+addEventListener("hashchange",()=>setMode(location.hash.slice(1),false));
+
+/* ---- terminal ---- */
+const L=[
+ ["p","$ ","k","g++ -std=c++26 -O3 -Wall roman.cpp -o hire_me"],
+ ["n","roman.cpp:1:1: note: ","","compiling 7 years of production C++..."],
+ ["n","roman.cpp:7:4: note: ","","linking Ericsson LTE/5G NR + HARMAN automotive + AI agents"],
+ ["w","roman.cpp:42:1: warning: ","","senior engineer is not yet in your contacts [-Wmissed-opportunity]"],
+ ["p","$ ","k","./hire_me"],
+ ["e","Segmentation fault (core dumped)","",""],
+ ["c","// relax, that was a joke. My code doesn't do that.","",""],
+ ["p","[ OK ] ","","core dump loaded, scroll down ↓"]
+];
+const log=document.getElementById("log"),term=document.getElementById("term");
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+let done=false,timer=null;
+const line=l=>`<span class="${l[0]}">${esc(l[1])}</span><span class="${l[2]}">${esc(l[3])}</span>`;
+function finish(){done=true;clearTimeout(timer);log.innerHTML=L.map(line).join("\n")+"\n<span class='p'>$ </span><span class='cur'></span>"}
+function boot(){
+  started=true;
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let seen=false;try{seen=sessionStorage.getItem("rh_seen")==="1";sessionStorage.setItem("rh_seen","1")}catch(e){}
+  if(reduce||seen){finish();return}
+  let i=0,ch=0,out="";
+  const step=()=>{
+    if(done)return;
+    if(i>=L.length){finish();return}
+    const l=L[i];
+    if(l[2]==="k"&&ch<=l[3].length){log.innerHTML=out+`<span class="p">${esc(l[1])}</span><span class="k">${esc(l[3].slice(0,ch))}</span><span class="cur"></span>`;ch+=2;timer=setTimeout(step,28);return}
+    out+=line(l)+"\n";log.innerHTML=out+"<span class='cur'></span>";
+    if(l[0]==="e"){term.classList.remove("shake");void term.offsetWidth;term.classList.add("shake")}
+    i++;ch=0;timer=setTimeout(step,l[0]==="e"?1400:l[0]==="n"?380:520);
+  };
+  timer=setTimeout(step,300);
+}
+document.getElementById("skip").addEventListener("click",finish);
+
+/* ---- actions ---- */
+const diag=document.getElementById("diag");
+function render(ok){diag.innerHTML=ok
+ ?`<span class="ok">Build succeeded:</span> 0 errors, 0 warnings.<br>note: see you around the expo hall.`
+ :`<span class="w">warning:</span> contact not saved yet [-Wmissed-opportunity]<br>1 warning generated. Press a button above to fix.`}
+let ok=false;try{ok=localStorage.getItem("rh_ok")==="1"}catch(e){}
+render(ok);
+function success(el,t){try{localStorage.setItem("rh_ok","1")}catch(e){}render(true);const m=el.closest(".hero").querySelector(".msg");if(m&&t)m.textContent=t}
+document.querySelectorAll("a[data-ok]").forEach(a=>a.addEventListener("click",()=>success(a,a.dataset.ok)));
+const T=`Roman Herasymchuk\nSenior C++ Engineer & LTE Product Guardian, Ericsson\nŁódź, Poland\n+48 792 709 196\nroman.herasymchuk.ua@gmail.com\nTelegram: https://t.me/quiet_detonation\n${LI}\nMet at WAWTech 2026, Warsaw`;
+document.querySelectorAll(".copy").forEach(b=>b.addEventListener("click",async()=>{
+  const dev=document.body.dataset.mode==="dev";
+  try{await navigator.clipboard.writeText(T);success(b,dev?"→ moved to your clipboard. Paste it into your notes.":"Copied. Paste it into your notes or contacts.")}
+  catch(e){const m=b.closest(".hero").querySelector(".msg");m.textContent="Copy didn't work here. The details are right below."}
+}));
+
+/* ---- start ---- */
+let start=location.hash.slice(1);
+if(start!=="dev"&&start!=="human"){try{start=localStorage.getItem("rh_mode")||"dev"}catch(e){start="dev"}}
+setMode(start,false);
+}
+</script>
+</body>
+</html>
